@@ -1,0 +1,37 @@
+name: Build Spring Boot App with JFrog
+
+on:
+  push:
+    branches:
+      - main  # Replace with your target branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'  # Replace with your desired Java version
+
+      - name: Install JFrog CLI
+        uses: jfrog/setup-jfrog-cli@v2
+        with:
+          jfrog-cli-version: 'latest'  # You can specify a specific version if needed
+
+      - name: Build Spring Boot App
+        run: |
+          ./mvnw clean package
+        working-directory: your-spring-boot-app-directory  # Replace with your app's directory
+
+      - name: Publish Artifacts to JFrog
+        run: |
+          jfrog rt u target/*.jar your-jfrog-repo-name/  # Replace with your repo and target artifacts
+        env:
+          JFROG_CLI_BUILD_NAME: ${{ github.run_id }}
+          JFROG_CLI_BUILD_NUMBER: ${{ github.run_number }}
+        working-directory: your-spring-boot-app-directory  # Replace with your app's directory
