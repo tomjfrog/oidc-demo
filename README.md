@@ -1,2 +1,2 @@
 # oidc-demo
-Test repo for Github Actions &amp; JFrog's OIDC Support
+Test repo for Github Actions and JFrog's OIDC Support

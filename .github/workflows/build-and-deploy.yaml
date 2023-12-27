@@ -5,9 +5,25 @@ on:
     branches:
       - main  # Replace with your target branch
 
+# This is required as per
+# https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-cloud-providers#adding-permissions-settings
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      JF_ENV_1: ${{ secrets.JF_ENV_1 }}
+      #      JF_ACCESS_TOKEN: ${{ secrets.JF_ACCESS_TOKEN }}
+      JF_BASE_URL: ${{ vars.JF_BASE_URL }}
+      JF_INSTANCE_NAME: ${{ vars.JF_INSTANCE_NAME }}
+      MVNC_REPO_RESOLVE_SNAPSHOTS: ${{ vars.JF_VIRTUAL_REPO }}
+      MVNC_REPO_RESOLVE_RELEASES: ${{ vars.JF_VIRTUAL_REPO }}
+      MVNC_REPO_DEPLOY_SNAPSHOTS: ${{ vars.JF_VIRTUAL_REPO }}
+      MVNC_REPO_DEPLOY_RELEASES: ${{ vars.JF_VIRTUAL_REPO }}
+      JFROG_BUILD_STATUS: PASS
 
     steps:
       - name: Checkout Repository
@@ -18,20 +34,78 @@ jobs:
         with:
           java-version: '17'  # Replace with your desired Java version
 
-      - name: Install JFrog CLI
-        uses: jfrog/setup-jfrog-cli@v2
+      - name: Install OIDC Client from Core Package
+        run: npm install @actions/core@1.6.0 @actions/http-client
+
+      - name: Get ID Token
+        uses: actions/github-script@v6
+        id: idtoken
         with:
-          jfrog-cli-version: 'latest'  # You can specify a specific version if needed
+          script: |
+          const coredemo = require('@actions/core')
+          let id_token = await coredemo.getIDToken()
+          coredemo.setOutput('id_token', id_token)
 
-      - name: Build Spring Boot App
-        run: |
-          ./mvnw clean package
-        working-directory: your-spring-boot-app-directory  # Replace with your app's directory
-
-      - name: Publish Artifacts to JFrog
-        run: |
-          jfrog rt u target/*.jar your-jfrog-repo-name/  # Replace with your repo and target artifacts
+      - name: Fetch Access Token from Artifactory
+        id: fetch_access_token
         env:
-          JFROG_CLI_BUILD_NAME: ${{ github.run_id }}
-          JFROG_CLI_BUILD_NUMBER: ${{ github.run_number }}
-        working-directory: your-spring-boot-app-directory  # Replace with your app's directory
+          ID_TOKEN: ${{ steps.idtoken.outputs.id_token }}
+        run: |
+          ACCESS_TOKEN=$(curl \
+          -X POST \
+          -H "Content-type: application/json" \
+          -H "Authorization: Bearer cOENUdUxv" \
+          https://tomjfrog.jfrog.io/access/api/v1/oidc/token \
+          -d \
+          '{“grant_type”: “urn:ietf:params:oauth:grant-type:token-exchange”, \
+           “subject_token_type”:”urn:ietf:params:oauth:token-type:id_token”, \
+           “subject_token”: $ID_TOKEN, \
+           "provider_name": "github-oidc"}'
+          )
+          echo ACCESS_TOKEN=$ACCESS_TOKEN >> $GITHUB_OUTPUT
+
+      - name: Validate OIDC Workflow
+        id: validate
+        env:
+          TEMP_TOKEN: ${{ steps.fetch_access_token.outputs.ACCESS_TOKEN }}
+        run: |
+          echo ${{ env.TEMP_TOKEN }}
+
+#      - name: Install JFrog CLI
+#        uses: jfrog/setup-jfrog-cli@v2
+#        with:
+#          jfrog-cli-version: 'latest'  # You can specify a specific version if needed
+#
+#      - name: Configure Maven Client for Artifactory
+#        run: |
+#          # This has to get done to tell the JFrog CLI where to find Maven
+#          MVN_PATH=`which mvn` && export M2_HOME=`readlink -f $MVN_PATH | xargs dirname | xargs dirname`
+#
+#          # Configure the project
+#          jf mvn-config \
+#          --server-id-resolve $JF_INSTANCE_NAME \
+#          --repo-resolve-releases $MVNC_REPO_RESOLVE_RELEASES \
+#          --repo-resolve-snapshots $MVNC_REPO_RESOLVE_SNAPSHOTS \
+#          --repo-deploy-releases $MVNC_REPO_DEPLOY_RELEASES \
+#          --repo-deploy-snapshots $MVNC_REPO_DEPLOY_SNAPSHOTS
+#
+#          # Build the project using JFrog CLI
+#          jf mvn clean install \
+#          -Drevision=${{ env.GIT_COMMIT_SHA }} \
+#          --build-name=${{ github.repository }} \
+#          --build-number=${{ github.run_number }}
+#
+#      - name: Build Spring Boot App
+#        run: |
+#          jf mvn clean install
+#        working-directory: your-spring-boot-app-directory  # Replace with your app's directory
+#        JFROG_CLI_BUILD_NAME: ${{ github.run_id }}
+#        JFROG_CLI_BUILD_NUMBER: ${{ github.run_number }}
+#
+#      - name: Publish Artifacts to JFrog
+#        run: |
+#          jfrog rt u target/*.jar your-jfrog-repo-name/  # Replace with your repo and target artifacts
+#        env:
+#          JFROG_CLI_BUILD_NAME: ${{ github.run_id }}
+#          JFROG_CLI_BUILD_NUMBER: ${{ github.run_number }}
+#        working-directory: your-spring-boot-app-directory  # Replace with your app's directory
