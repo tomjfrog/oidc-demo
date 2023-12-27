@@ -33,7 +33,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: '17'  # Replace with your desired Java version
-          distribution: corretto
+          distribution: 'corretto'
 
       - name: Install OIDC Client from Core Package
         run: npm install @actions/core@1.6.0 @actions/http-client
