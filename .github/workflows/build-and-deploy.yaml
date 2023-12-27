@@ -83,7 +83,6 @@ jobs:
 
           # Configure the project
           jf mvn-config \
-          --server-id-resolve default \
           --repo-resolve-releases $MVNC_REPO_RESOLVE_RELEASES \
           --repo-resolve-snapshots $MVNC_REPO_RESOLVE_SNAPSHOTS \
           --repo-deploy-releases $MVNC_REPO_DEPLOY_RELEASES \
