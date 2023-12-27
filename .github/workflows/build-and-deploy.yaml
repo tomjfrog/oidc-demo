@@ -73,7 +73,7 @@ jobs:
           JF_URL: ${{ vars.JF_URL }}
           JF_ACCESS_TOKEN: ${{ steps.fetch_access_token.outputs.ACCESS_TOKEN }}
       - run: |
-          jf c add default --access-token $JF_ACCESS_TOKEN --url $JF_URL --interactive false
+          jf c add --access-token $JF_ACCESS_TOKEN --url $JF_URL --interactive false
 
       - name: Configure Maven Client for Artifactory
         run: |
