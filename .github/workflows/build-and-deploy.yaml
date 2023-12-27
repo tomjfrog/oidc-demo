@@ -84,7 +84,10 @@ jobs:
           jf c add $JF_INSTANCE_NAME \
           --access-token $JF_ACCESS_TOKEN \
           --url https://tomjfrog.jfrog.io \
+          --interactive false
+          
           jf c use $JF_INSTANCE_NAME
+          
           jf rt ping
 
       - name: Configure Maven Client for Artifactory
