@@ -50,9 +50,8 @@ jobs:
       - name: Get ID Token
         id: idtoken
         run: |
-          ID_TOKEN=$(curl -sLS -H "User-Agent: actions/oidc-client" -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-          "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=jfrog-github" | jq .value | tr -d '"')
-          echo "ID_TOKEN=${ID_TOKEN}" >> $GITHUB_ENV
+          curl -sLS -H "User-Agent: actions/oidc-client" -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+          "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=jfrog-github"
 
       - name: Fetch Access Token from Artifactory
         id: fetch_access_token
