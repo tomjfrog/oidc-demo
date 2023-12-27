@@ -42,8 +42,7 @@ jobs:
         id: idtoken
         with:
           script: |
-          const coredemo = require('@actions/core')
-          let id_token = await coredemo.getIDToken()
+          let id_token = await core.getIDToken()
           coredemo.setOutput('id_token', id_token)
 
       - name: Fetch Access Token from Artifactory
