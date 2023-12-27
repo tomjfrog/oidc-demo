@@ -71,7 +71,7 @@ jobs:
           JF_ACCESS_TOKEN: ${{ steps.fetch_access_token.outputs.ACCESS_TOKEN }}
 
       - name: Test JF CLI
-      - run: |
+        run: |
           jf rt ping
 
       - name: Configure Maven Client for Artifactory
