@@ -91,29 +91,22 @@ jobs:
 
           # Configure the project
           jf mvn-config \
-          --server-id-resolve $JF_INSTANCE_NAME \
+          --server-id-resolve tomjfrog.jfrog.io \
           --repo-resolve-releases $MVNC_REPO_RESOLVE_RELEASES \
           --repo-resolve-snapshots $MVNC_REPO_RESOLVE_SNAPSHOTS \
           --repo-deploy-releases $MVNC_REPO_DEPLOY_RELEASES \
           --repo-deploy-snapshots $MVNC_REPO_DEPLOY_SNAPSHOTS
-#
-#          # Build the project using JFrog CLI
-#          jf mvn clean install \
-#          -Drevision=${{ env.GIT_COMMIT_SHA }} \
-#          --build-name=${{ github.repository }} \
-#          --build-number=${{ github.run_number }}
-#
-#      - name: Build Spring Boot App
-#        run: |
-#          jf mvn clean install
-#        working-directory: your-spring-boot-app-directory  # Replace with your app's directory
-#        JFROG_CLI_BUILD_NAME: ${{ github.run_id }}
-#        JFROG_CLI_BUILD_NUMBER: ${{ github.run_number }}
-#
-#      - name: Publish Artifacts to JFrog
-#        run: |
-#          jfrog rt u target/*.jar your-jfrog-repo-name/  # Replace with your repo and target artifacts
-#        env:
-#          JFROG_CLI_BUILD_NAME: ${{ github.run_id }}
-#          JFROG_CLI_BUILD_NUMBER: ${{ github.run_number }}
-#        working-directory: your-spring-boot-app-directory  # Replace with your app's directory
+
+          # Build the project using JFrog CLI
+          jf mvn clean install \
+          -Drevision=${{ env.GIT_COMMIT_SHA }} \
+          -DskipTests \
+          --build-name=${{ github.repository }} \
+          --build-number=${{ github.run_number }}
+
+      - name: Build Spring Boot App
+        run: |
+          jf mvn clean install
+        working-directory: your-spring-boot-app-directory  # Replace with your app's directory
+        JFROG_CLI_BUILD_NAME: ${{ github.run_id }}
+        JFROG_CLI_BUILD_NUMBER: ${{ github.run_number }}
