@@ -73,7 +73,7 @@ jobs:
           JF_URL: ${{ vars.JF_URL }}
           JF_ACCESS_TOKEN: ${{ steps.fetch_access_token.outputs.ACCESS_TOKEN }}
       - run: |
-          jf c show
+          jf c add default --access-token $JF_ACCESS_TOKEN --url $JF_URL --interactive false
 
       - name: Configure Maven Client for Artifactory
         run: |
@@ -82,7 +82,7 @@ jobs:
 
           # Configure the project
           jf mvn-config \
-          --server-id-resolve $JF_INSTANCE_NAME \
+          --server-id-resolve default \
           --repo-resolve-releases $MVNC_REPO_RESOLVE_RELEASES \
           --repo-resolve-snapshots $MVNC_REPO_RESOLVE_SNAPSHOTS \
           --repo-deploy-releases $MVNC_REPO_DEPLOY_RELEASES \
