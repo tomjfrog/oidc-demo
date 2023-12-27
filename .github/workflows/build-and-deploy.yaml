@@ -15,8 +15,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      JF_ENV_1: ${{ secrets.JF_ENV_1 }}
-      #      JF_ACCESS_TOKEN: ${{ secrets.JF_ACCESS_TOKEN }}
+      #      JF_ENV_1: ${{ secrets.JF_ENV_1 }}
+      JF_ACCESS_TOKEN: ${{ secrets.JF_ACCESS_TOKEN }}
       JF_BASE_URL: ${{ vars.JF_BASE_URL }}
       JF_INSTANCE_NAME: ${{ vars.JF_INSTANCE_NAME }}
       MVNC_REPO_RESOLVE_SNAPSHOTS: ${{ vars.JF_VIRTUAL_REPO }}
@@ -47,17 +47,17 @@ jobs:
             let id_token = await coredemo.getIDToken();
             coredemo.setOutput('id_token', id_token);
 
-#      - name: Get ID Token
-#        id: idtoken
-#        run: |
-#          ID_TOKEN=$(curl -sLS -H "User-Agent: actions/oidc-client" -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-#          "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=jfrog-github" | jq .value | tr -d '"')
-#          echo "ID_TOKEN=${ID_TOKEN}" >> $GITHUB_ENV
+      #      - name: Get ID Token
+      #        id: idtoken
+      #        run: |
+      #          ID_TOKEN=$(curl -sLS -H "User-Agent: actions/oidc-client" -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+      #          "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=jfrog-github" | jq .value | tr -d '"')
+      #          echo "ID_TOKEN=${ID_TOKEN}" >> $GITHUB_ENV
 
       - name: Fetch Access Token from Artifactory
         id: fetch_access_token
         env:
-#          ID_TOKEN: ${{ env.ID_TOKEN }}
+          #          ID_TOKEN: ${{ env.ID_TOKEN }}
           ID_TOKEN: ${{ steps.idtoken.outputs.id_token }}
         run: |
           ACCESS_TOKEN=$(curl \
@@ -68,12 +68,12 @@ jobs:
           "{\"grant_type\": \"urn:ietf:params:oauth:grant-type:token-exchange\", \"subject_token_type\":\"urn:ietf:params:oauth:token-type:id_token\", \"subject_token\": \"$ID_TOKEN\", \"provider_name\": \"github-oidc-integration\"}" | jq .access_token | tr -d '"')
           echo ACCESS_TOKEN=$ACCESS_TOKEN >> $GITHUB_OUTPUT
 
-#      - name: Validate OIDC Workflow
-#        id: validate
-#        env:
-#          TEMP_TOKEN: ${{ steps.fetch_access_token.outputs.ACCESS_TOKEN }}
-#        run: |
-#          echo ${{ env.TEMP_TOKEN }}
+      #      - name: Validate OIDC Workflow
+      #        id: validate
+      #        env:
+      #          TEMP_TOKEN: ${{ steps.fetch_access_token.outputs.ACCESS_TOKEN }}
+      #        run: |
+      #          echo ${{ env.TEMP_TOKEN }}
 
       - uses: jfrog/setup-jfrog-cli@v3
         env:
