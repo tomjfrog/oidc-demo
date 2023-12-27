@@ -81,8 +81,8 @@ jobs:
           JF_URL: ${{ vars.JF_URL }}
           JF_ACCESS_TOKEN: ${{ env.TEMP_TOKEN }}
       - run: |
-          jf rt ping
           jf c show
+          jf rt ping
 
       - name: Configure Maven Client for Artifactory
         run: |
