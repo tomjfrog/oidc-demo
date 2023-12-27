@@ -82,19 +82,20 @@ jobs:
           JF_ACCESS_TOKEN: ${{ env.TEMP_TOKEN }}
       - run: |
           jf rt ping
-#
-#      - name: Configure Maven Client for Artifactory
-#        run: |
-#          # This has to get done to tell the JFrog CLI where to find Maven
-#          MVN_PATH=`which mvn` && export M2_HOME=`readlink -f $MVN_PATH | xargs dirname | xargs dirname`
-#
-#          # Configure the project
-#          jf mvn-config \
-#          --server-id-resolve $JF_INSTANCE_NAME \
-#          --repo-resolve-releases $MVNC_REPO_RESOLVE_RELEASES \
-#          --repo-resolve-snapshots $MVNC_REPO_RESOLVE_SNAPSHOTS \
-#          --repo-deploy-releases $MVNC_REPO_DEPLOY_RELEASES \
-#          --repo-deploy-snapshots $MVNC_REPO_DEPLOY_SNAPSHOTS
+          jf c show
+
+      - name: Configure Maven Client for Artifactory
+        run: |
+          # This has to get done to tell the JFrog CLI where to find Maven
+          MVN_PATH=`which mvn` && export M2_HOME=`readlink -f $MVN_PATH | xargs dirname | xargs dirname`
+
+          # Configure the project
+          jf mvn-config \
+          --server-id-resolve $JF_INSTANCE_NAME \
+          --repo-resolve-releases $MVNC_REPO_RESOLVE_RELEASES \
+          --repo-resolve-snapshots $MVNC_REPO_RESOLVE_SNAPSHOTS \
+          --repo-deploy-releases $MVNC_REPO_DEPLOY_RELEASES \
+          --repo-deploy-snapshots $MVNC_REPO_DEPLOY_SNAPSHOTS
 #
 #          # Build the project using JFrog CLI
 #          jf mvn clean install \
