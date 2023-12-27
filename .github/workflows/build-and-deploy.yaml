@@ -48,7 +48,6 @@ jobs:
 #            coredemo.setOutput('id_token', id_token);
 
       - name: Get ID Token
-        uses: actions/github-script@v7
         id: idtoken
         run: |
           ID_TOKEN=$(curl -sLS -H "User-Agent: actions/oidc-client" -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
