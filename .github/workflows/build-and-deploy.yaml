@@ -15,6 +15,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
+      JF_URL: ${{ vars.JF_URL }}
       JF_INSTANCE_NAME: ${{ vars.JF_INSTANCE_NAME }}
       MVNC_REPO_RESOLVE_SNAPSHOTS: ${{ vars.JF_VIRTUAL_REPO }}
       MVNC_REPO_RESOLVE_RELEASES: ${{ vars.JF_VIRTUAL_REPO }}
@@ -67,7 +68,7 @@ jobs:
       - name: Install JFrog CLI
         uses: jfrog/setup-jfrog-cli@v3
         env:
-          JF_URL: ${{ vars.JF_URL }}
+          JF_URL: ${{ env.JF_URL }}
           JF_ACCESS_TOKEN: ${{ steps.fetch_access_token.outputs.ACCESS_TOKEN }}
 
       - name: Test JF CLI
