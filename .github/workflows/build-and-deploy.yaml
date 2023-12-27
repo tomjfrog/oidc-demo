@@ -57,7 +57,6 @@ jobs:
       - name: Fetch Access Token from Artifactory
         id: fetch_access_token
         env:
-          #          ID_TOKEN: ${{ env.ID_TOKEN }}
           ID_TOKEN: ${{ steps.idtoken.outputs.id_token }}
         run: |
           ACCESS_TOKEN=$(curl \
@@ -79,7 +78,7 @@ jobs:
         env:
           # JFrog platform url (for example: https://acme.jfrog.io)
           JF_URL: ${{ vars.JF_URL }}
-          JF_ACCESS_TOKEN: ${{ env.TEMP_TOKEN }}
+          JF_ACCESS_TOKEN: ${{ steps.fetch_access_token.outputs.ACCESS_TOKEN }}
       - run: |
           jf rt ping
 
