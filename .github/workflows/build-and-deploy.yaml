@@ -73,6 +73,7 @@ jobs:
 
       - name: Test JF CLI
         run: |
+          jf c show
           jf rt ping
 
       - name: Configure Maven Client for Artifactory
