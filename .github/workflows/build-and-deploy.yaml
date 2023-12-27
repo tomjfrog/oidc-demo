@@ -68,17 +68,20 @@ jobs:
           "{\"grant_type\": \"urn:ietf:params:oauth:grant-type:token-exchange\", \"subject_token_type\":\"urn:ietf:params:oauth:token-type:id_token\", \"subject_token\": \"$ID_TOKEN\", \"provider_name\": \"github-oidc-integration\"}" | jq .access_token | tr -d '"')
           echo ACCESS_TOKEN=$ACCESS_TOKEN >> $GITHUB_OUTPUT
 
-      - name: Validate OIDC Workflow
-        id: validate
-        env:
-          TEMP_TOKEN: ${{ steps.fetch_access_token.outputs.ACCESS_TOKEN }}
-        run: |
-          echo ${{ env.TEMP_TOKEN }}
+#      - name: Validate OIDC Workflow
+#        id: validate
+#        env:
+#          TEMP_TOKEN: ${{ steps.fetch_access_token.outputs.ACCESS_TOKEN }}
+#        run: |
+#          echo ${{ env.TEMP_TOKEN }}
 
-      - name: Install JFrog CLI
-        uses: jfrog/setup-jfrog-cli@v2
-        with:
-          jfrog-cli-version: 'latest'  # You can specify a specific version if needed
+      - uses: jfrog/setup-jfrog-cli@v3
+        env:
+          # JFrog platform url (for example: https://acme.jfrog.io)
+          JF_URL: ${{ vars.JF_URL }}
+          JF_ACCESS_TOKEN: ${{ env.TEMP_TOKEN }}
+      - run: |
+          jf rt ping
 #
 #      - name: Configure Maven Client for Artifactory
 #        run: |
