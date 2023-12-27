@@ -38,12 +38,13 @@ jobs:
         run: npm install @actions/core@1.6.0 @actions/http-client
 
       - name: Get ID Token
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         id: idtoken
         with:
           script: |
-          let id_token = await core.getIDToken()
-          coredemo.setOutput('id_token', id_token)
+            const coredemo = require('@actions/core');
+            let id_token = await coredemo.getIDToken();
+            coredemo.setOutput('id_token', id_token);
 
       - name: Fetch Access Token from Artifactory
         id: fetch_access_token
