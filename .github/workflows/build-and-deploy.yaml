@@ -35,24 +35,24 @@ jobs:
           java-version: '17'  # Replace with your desired Java version
           distribution: 'temurin'
 
-      - name: Install OIDC Client from Core Package
-        run: npm install @actions/core@1.6.0 @actions/http-client
+#      - name: Install OIDC Client from Core Package
+#        run: npm install @actions/core@1.6.0 @actions/http-client
+
+#      - name: Get ID Token
+#        uses: actions/github-script@v7
+#        id: idtoken
+#        with:
+#          script: |
+#            const coredemo = require('@actions/core');
+#            let id_token = await coredemo.getIDToken();
+#            coredemo.setOutput('id_token', id_token);
 
       - name: Get ID Token
-        uses: actions/github-script@v7
         id: idtoken
-        with:
-          script: |
-            const coredemo = require('@actions/core');
-            let id_token = await coredemo.getIDToken();
-            coredemo.setOutput('id_token', id_token);
-
-      #      - name: Get ID Token
-      #        id: idtoken
-      #        run: |
-      #          ID_TOKEN=$(curl -sLS -H "User-Agent: actions/oidc-client" -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-      #          "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=jfrog-github" | jq .value | tr -d '"')
-      #          echo "ID_TOKEN=${ID_TOKEN}" >> $GITHUB_ENV
+        run: |
+          ID_TOKEN=$(curl -sLS -H "User-Agent: actions/oidc-client" -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+          "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=jfrog-github" | jq .value | tr -d '"')
+          echo "ID_TOKEN=${ID_TOKEN}" >> $GITHUB_OUTPUT
 
       - name: Fetch Access Token from Artifactory
         id: fetch_access_token
