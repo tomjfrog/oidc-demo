@@ -57,7 +57,7 @@ jobs:
       - name: Fetch Access Token from Artifactory
         id: fetch_access_token
         env:
-          ID_TOKEN: ${{ env.ID_TOKEN }}
+#          ID_TOKEN: ${{ env.ID_TOKEN }}
           ID_TOKEN: ${{ steps.idtoken.outputs.id_token }}
         run: |
           ACCESS_TOKEN=$(curl \
