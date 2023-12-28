@@ -41,8 +41,8 @@ jobs:
         uses: actions/github-script@v7
         id: idtoken
         with:
-          audience: ${{ env.OIDC_AUDIENCE }}
           script: |
+            const audience = ${{ env.OIDC_AUDIENCE }}
             const coredemo = require('@actions/core');
             let id_token = await coredemo.getIDToken(audience);
             coredemo.setOutput('id_token', id_token);
