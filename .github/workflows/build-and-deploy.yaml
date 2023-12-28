@@ -75,22 +75,23 @@ jobs:
         run: |
           jf c show
           jf rt ping
+          jf rt curl -XGET /api/build
 
-      - name: Configure Maven Client for Artifactory, Build and Publish
-        run: |
-          # This has to get done to tell the JFrog CLI where to find Maven
-          MVN_PATH=`which mvn` && export M2_HOME=`readlink -f $MVN_PATH | xargs dirname | xargs dirname`
-
-          # Configure the project
-          jf mvn-config \
-          --repo-resolve-releases $MVNC_REPO_RESOLVE_RELEASES \
-          --repo-resolve-snapshots $MVNC_REPO_RESOLVE_SNAPSHOTS \
-          --repo-deploy-releases $MVNC_REPO_DEPLOY_RELEASES \
-          --repo-deploy-snapshots $MVNC_REPO_DEPLOY_SNAPSHOTS
-
-          # Build the project using JFrog CLI
-          jf mvn clean install \
-          -Drevision=${{ env.GIT_COMMIT_SHA }} \
-          -DskipTests \
-          --build-name=${{ github.repository }} \
-          --build-number=${{ github.run_number }}
+#      - name: Configure Maven Client for Artifactory, Build and Publish
+#        run: |
+#          # This has to get done to tell the JFrog CLI where to find Maven
+#          MVN_PATH=`which mvn` && export M2_HOME=`readlink -f $MVN_PATH | xargs dirname | xargs dirname`
+#
+#          # Configure the project
+#          jf mvn-config \
+#          --repo-resolve-releases $MVNC_REPO_RESOLVE_RELEASES \
+#          --repo-resolve-snapshots $MVNC_REPO_RESOLVE_SNAPSHOTS \
+#          --repo-deploy-releases $MVNC_REPO_DEPLOY_RELEASES \
+#          --repo-deploy-snapshots $MVNC_REPO_DEPLOY_SNAPSHOTS
+#
+#          # Build the project using JFrog CLI
+#          jf mvn clean install \
+#          -Drevision=${{ env.GIT_COMMIT_SHA }} \
+#          -DskipTests \
+#          --build-name=${{ github.repository }} \
+#          --build-number=${{ github.run_number }}
