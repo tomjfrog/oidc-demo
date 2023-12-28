@@ -40,10 +40,11 @@ jobs:
       - name: Get ID Token (@actions/core method)
         uses: actions/github-script@v7
         id: idtoken
+        env: AUDIENCE=${{ env.OIDC_AUDIENCE }}
         with:
           script: |
             const coredemo = require('@actions/core');
-            let id_token = await coredemo.getIDToken('jfrog-github');
+            let id_token = await coredemo.getIDToken($AUDIENCE);
             coredemo.setOutput('id_token', id_token);
 
 #      While this step achieves the same result as the previous 'Get ID Token' step, writing Javascript is much cleaner
