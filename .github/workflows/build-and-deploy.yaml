@@ -34,7 +34,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Install OIDC Client from Core Package
-        run: npm install @actions/core@1.6.0 @actions/http-client
+        run: npm install @actions/core @actions/http-client
 
       - name: Get ID Token
         uses: actions/github-script@v7
@@ -43,8 +43,7 @@ jobs:
           script: |
             const coredemo = require('@actions/core');
             let id_token = await coredemo.getIDToken('jfrog-github');
-            echo id_token=${id_token} >> $GITHUB_OUTPUT
-#            coredemo.setOutput('id_token', id_token);
+            coredemo.setOutput('id_token', id_token);
 
 #      - name: Get ID Token
 #        id: idtoken
