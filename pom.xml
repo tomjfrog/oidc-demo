@@ -8,7 +8,8 @@
     <name>oidc-demo</name>
     <description>Demo project for OIDC Token Exchange with Github Actions</description>
     <properties>
-        <java.version>17</java.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
     </properties>
     <dependencies>
         <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
