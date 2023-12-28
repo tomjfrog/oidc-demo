@@ -42,7 +42,7 @@ jobs:
         with:
           script: |
             const coredemo = require('@actions/core');
-            let id_token = await coredemo.getIDToken(jfrog-github);
+            let id_token = await coredemo.getIDToken('jfrog-github');
             coredemo.setOutput('id_token', id_token);
 
 #      - name: Get ID Token
