@@ -17,6 +17,7 @@ jobs:
     env:
       JF_URL: ${{ vars.JF_URL }}
       JF_INSTANCE_NAME: ${{ vars.JF_INSTANCE_NAME }}
+      OIDC_AUDIENCE: 'jfrog-github'
       MVNC_REPO_RESOLVE_SNAPSHOTS: ${{ vars.JF_VIRTUAL_REPO }}
       MVNC_REPO_RESOLVE_RELEASES: ${{ vars.JF_VIRTUAL_REPO }}
       MVNC_REPO_DEPLOY_SNAPSHOTS: ${{ vars.JF_VIRTUAL_REPO }}
@@ -36,16 +37,19 @@ jobs:
       - name: Install OIDC Client from Core Package
         run: npm install @actions/core @actions/http-client
 
-      - name: Get ID Token
+      - name: Get ID Token (@actions/core method)
         uses: actions/github-script@v7
         id: idtoken
         with:
           script: |
             const coredemo = require('@actions/core');
-            let id_token = await coredemo.getIDToken('jfrog-github');
+            let id_token = await coredemo.getIDToken(${{ env.OIDC_AUDIENCE }});
             coredemo.setOutput('id_token', id_token);
 
-#      - name: Get ID Token
+#      While this step achieves the same result as the previous 'Get ID Token' step, writing Javascript is much cleaner
+#      and less prone to syntax errors than the 'curl' method below
+#
+#      - name: Get ID Token (cURL method)
 #        id: idtoken
 #        run: |
 #          ID_TOKEN=$(curl -sLS -H "User-Agent: actions/oidc-client" -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
