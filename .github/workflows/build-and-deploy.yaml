@@ -33,8 +33,8 @@ jobs:
           java-version: '17'  # Replace with your desired Java version
           distribution: 'temurin'
 
-#      - name: Install OIDC Client from Core Package
-#        run: npm install @actions/core@1.6.0 @actions/http-client
+      - name: Install OIDC Client from Core Package
+        run: npm install @actions/core@1.6.0 @actions/http-client
 
 #      - name: Get ID Token
 #        uses: actions/github-script@v7
