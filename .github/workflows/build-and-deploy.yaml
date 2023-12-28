@@ -37,13 +37,20 @@ jobs:
       - name: Install OIDC Client from Core Package
         run: npm install @actions/core @actions/http-client
 
+#     While this approach to fetching an ID Token from the Github Service is a bit more complex due to it being
+#     an Async JavaScript block), the construction is a little cleaner to write
       - name: Get ID Token (@actions/core method)
         uses: actions/github-script@v7
         id: idtoken
         with:
           script: |
+            # import the `Core` package
             const coredemo = require('@actions/core');
+            
+            # call getIdToken() from the Core package, using the environment variable we declare at the start of the spec
             let id_token = await coredemo.getIDToken(process.env.OIDC_AUDIENCE);
+            
+            # Set the output as per the Core package setOutput() function
             coredemo.setOutput('id_token', id_token);
 
 #      While this step achieves the same result as the previous 'Get ID Token' step, writing Javascript is much cleaner
