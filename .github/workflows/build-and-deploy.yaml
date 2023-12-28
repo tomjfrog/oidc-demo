@@ -45,7 +45,7 @@ jobs:
         with:
           script: |
             const coredemo = require('@actions/core');
-            let id_token = await coredemo.getIDToken($AUDIENCE);
+            let id_token = await coredemo.getIDToken("$AUDIENCE");
             coredemo.setOutput('id_token', id_token);
 
 #      While this step achieves the same result as the previous 'Get ID Token' step, writing Javascript is much cleaner
