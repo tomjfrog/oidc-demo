@@ -1,4 +1,4 @@
-name: Build Spring Boot App with JFrog
+name: Test OIDC Token AuthN and AuthZ with Artifactory
 
 on:
   push:
