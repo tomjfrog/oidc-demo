@@ -16,12 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       JF_URL: ${{ vars.JF_URL }}
-      JF_INSTANCE_NAME: ${{ vars.JF_INSTANCE_NAME }}
       OIDC_AUDIENCE: 'jfrog-github'
-      MVNC_REPO_RESOLVE_SNAPSHOTS: ${{ vars.JF_VIRTUAL_REPO }}
-      MVNC_REPO_RESOLVE_RELEASES: ${{ vars.JF_VIRTUAL_REPO }}
-      MVNC_REPO_DEPLOY_SNAPSHOTS: ${{ vars.JF_VIRTUAL_REPO }}
-      MVNC_REPO_DEPLOY_RELEASES: ${{ vars.JF_VIRTUAL_REPO }}
       JFROG_BUILD_STATUS: PASS
 
     steps:
@@ -74,7 +69,7 @@ jobs:
       - name: Install JFrog CLI
         uses: jfrog/setup-jfrog-cli@v3
         env:
-          JF_URL: ${{ env.JF_URL }}
+          JF_URL: ${{ vars.JF_URL }}
         with:
           oidc-provider-name: "github-oidc-integration"
           oidc-audience: "jfrog-github"
@@ -85,22 +80,3 @@ jobs:
           jf c show
           jf rt ping
           jf rt curl -XGET /api/build
-
-#      - name: Configure Maven Client for Artifactory, Build and Publish
-#        run: |
-#          # This has to get done to tell the JFrog CLI where to find Maven
-#          MVN_PATH=`which mvn` && export M2_HOME=`readlink -f $MVN_PATH | xargs dirname | xargs dirname`
-#
-#          # Configure the project
-#          jf mvn-config \
-#          --repo-resolve-releases $MVNC_REPO_RESOLVE_RELEASES \
-#          --repo-resolve-snapshots $MVNC_REPO_RESOLVE_SNAPSHOTS \
-#          --repo-deploy-releases $MVNC_REPO_DEPLOY_RELEASES \
-#          --repo-deploy-snapshots $MVNC_REPO_DEPLOY_SNAPSHOTS
-#
-#          # Build the project using JFrog CLI
-#          jf mvn clean install \
-#          -Drevision=${{ env.GIT_COMMIT_SHA }} \
-#          -DskipTests \
-#          --build-name=${{ github.repository }} \
-#          --build-number=${{ github.run_number }}
