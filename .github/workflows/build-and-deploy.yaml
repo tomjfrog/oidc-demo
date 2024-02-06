@@ -1,9 +1,7 @@
 name: Test OIDC Token AuthN and AuthZ with Artifactory
 
 on:
-  push:
-    branches:
-      - main  # Replace with your target branch
+  workflow_dispatch:
 
 # This is required as per
 # https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-cloud-providers#adding-permissions-settings
@@ -15,8 +13,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      JF_URL: ${{ vars.JF_URL }}
       OIDC_AUDIENCE: 'jfrog-github'
+      JF_OIDC_PROVIDER_NAME: "github-oidc-integration"
       JFROG_BUILD_STATUS: PASS
 
     steps:
@@ -71,8 +69,8 @@ jobs:
         env:
           JF_URL: ${{ vars.JF_URL }}
         with:
-          oidc-provider-name: "github-oidc-integration"
-          oidc-audience: "jfrog-github"
+          oidc-provider-name: ${{ env.JF_OIDC_PROVIDER_NAME }}
+          oidc-audience: ${{ env.OIDC_AUDIENCE }}
 
 
       - name: Test JF CLI
@@ -80,3 +78,4 @@ jobs:
           jf c show
           jf rt ping
           jf rt curl -XGET /api/build
+          jf rt curl -XPOST /api/foo -d '{}'
