@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 jobs:
-  Debug OIDC:
+  Debug-OIDC:
     permissions:
       contents: read
       id-token: write
