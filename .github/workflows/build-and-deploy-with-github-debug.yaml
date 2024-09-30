@@ -1,4 +1,4 @@
-name: Test OIDC Token AuthN and AuthZ with Artifactory
+name: Token Debug
 
 on:
   workflow_dispatch:
