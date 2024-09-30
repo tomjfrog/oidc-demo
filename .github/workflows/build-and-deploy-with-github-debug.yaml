@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  Debug OIDC:
     permissions:
       contents: read
       id-token: write
@@ -24,38 +24,15 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Set up Java
-        uses: actions/setup-java@v2
-        with:
-          java-version: '17'  # Replace with your desired Java version
-          distribution: 'temurin'
-
-#      - name: Install JFrog CLI
-#        id: setup-jf-cli
-#        uses: jfrog/setup-jfrog-cli@v4
-#        env:
-#          JF_URL: ${{ vars.JF_URL }}
-#        with:
-#          oidc-provider-name: ${{ env.JF_OIDC_PROVIDER_NAME }}
-#          oidc-audience: ${{ env.OIDC_AUDIENCE }}
-
       - name: Checkout actions-oidc-debugger
         uses: actions/checkout@v3
         id: token-debug
         with:
           repository: github/actions-oidc-debugger
           ref: main
-#          token: ${{ steps.setup-jf-cli.outputs.oidc-token }}
           path: ./.github/actions/actions-oidc-debugger
 
       - name: Debug OIDC Claims
         uses: ./.github/actions/actions-oidc-debugger
         with:
           audience: '${{ github.server_url }}/${{ github.repository_owner }}'
-
-      - name: Test JF CLI
-        run: |
-          jf c show
-          jf rt ping
-          jf rt curl -XGET /api/build
-          jf rt curl -XPOST /api/foo -d '{}'
