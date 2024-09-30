@@ -45,7 +45,7 @@ jobs:
         with:
           repository: github/actions-oidc-debugger
           ref: main
-          token: ${{ steps.setup-jf-cli.outputs.oidc-token }}
+#          token: ${{ steps.setup-jf-cli.outputs.oidc-token }}
           path: ./.github/actions/actions-oidc-debugger
 
       - name: Test JF CLI
